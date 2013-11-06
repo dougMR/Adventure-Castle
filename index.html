@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>~ The Adventure of Central Park Castle ~</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="Mega Doug Roussin" />
+	<meta name="geo.country" content="US" />
+	<meta name="dc.language" content="en" />
+	<meta name="description" content="point-and-click Adventure Game, under development" />
+	<meta name="keywords" content="adventure, doug, game, roussin, central park, fun" />
+	
+	<link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+	
+	<style type="text/css" media="screen">		
+	/*local styles if any (quick tests and local only overrides)*/
+	#preventEmptyTag{
+		color: #00FF00;
+	}
+	</style>
+	
+	<script src="js/AdventureGameObject.js"></script>
+	
+	<script src="js/AdventureEngineCore.js"></script>
+	<script src="js/AudioSystem.js"></script>
+
+	<script src="js/Scene.js"></script>	
+	<script src="js/Door.js"></script>	
+	<script src="js/Lock.js"></script>
+	<script src="js/Item.js"></script>
+
+	<script src="js/Container.js"></script>
+	<script src="js/Hotspot.js"></script>
+
+	<script src="js/Slotbox.js"></script>
+	<script src="js/Switch.js"></script>
+	
+	<script src="js/Inventory.js"></script>
+	<script src="js/Backbutton.js"></script>
+		
+	<script src="js/ensureEventListeners.js"></script>
+	<script src="js/getWindowDimensions.js"></script>
+	
+	
+	<script type="text/javascript">
+	<!--
+
+	//
+	//
+	//
+	var blackCover_div;
+	var containers_div;
+	var items_div;
+	var inventory_div;
+	var scrollbox_div;
+	var switches_div;
+	var backgrounds_div;Item
+	var doors_div;
+	var wrap_div;
+	var hotspots_div;
+	var items_ar = [];
+	var containers_ar = [];
+	var slotboxes_ar = [];
+	var switches_ar = [];
+	var doors_ar = [];
+	var scenes_ar = [];
+	var segues_ar = [];
+	var hotspots_ar = [];
+	var backbutton;
+	
+	
+	var bgMusic;
+	var harp;
+	
+	function queueLoaded_handler(e){
+		//trace("lq.numLoaded: "+lq.numLoaded);
+		scene1.show();  // < -- Once EVERYTHING is loaded
+		//trace("WELCOME",true);
+		//trace("images loaded: "+lq.numLoaded);
+		positionScene();
+		
+	}
+
+	
+	// Once Everything is Loaded, 
+	// resolve myTarget from myTargetID for Items, Switches and Doors
+	function getObjectFromID(targetID){
+		var foundTarget = false;
+		var targetObj = null;		
+		//trace("\rlooking for: "+targetID);	
+		// Look in Containers
+		for(var c = 0; c < containers_ar.length; c++){
+			var container = containers_ar[c];
+			if(container.myID == targetID){
+				targetObj = container;
+				foundTarget = true;
+				break;
+			}
+		}
+		// Look in Items
+		if(!foundTarget){
+			for(var i = 0; i < items_ar.length; i++){
+				var item = items_ar[i];
+				if(item.myID == targetID){
+					targetObj = item;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		// Look in Doors
+		if(!foundTarget){
+			for(var d = 0; d < doors_ar.length; d++){
+				var door = doors_ar[d];
+				if(door.myID == targetID){
+					targetObj = door;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		// Look in Slotboxes
+		if(!foundTarget){
+			for(var sb = 0; sb < slotboxes_ar.length; sb++){
+				var box = slotboxes_ar[sb];
+				if(box.myID == targetID){
+					targetObj = box;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		// Look in Scenes
+		if(!foundTarget){
+			for(var sc = 0; sc < scenes_ar.length; sc++){
+				var scene = scenes_ar[sc];
+				//trace("checking "+scene.myID);
+				if(scene.myID == targetID){
+					targetObj = scene;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		// Look in Segues
+		if(!foundTarget){
+			for(var seg = 0; seg < segues_ar.length; seg++){
+				var segue = segues_ar[seg];
+				//trace("checking "+scene.myID);
+				if(segue.myID == targetID){
+					targetObj = segue;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		// Look in Switches
+		if(!foundTarget){
+			for(var sw = 0; sw < switches_ar.length; sw++){
+				var nextSwitch = switches_ar[sw];
+				//trace("checking "+scene.myID);
+				if(nextSwitch.myID == targetID){
+					targetObj = nextSwitch;
+					foundTarget = true;
+					break;
+				}
+			}
+		}
+		return targetObj;
+	}
+	function resolveTargets(){
+		//trace("reolveTargets",true);
+		// replace all items' and doors' myTarget string with object
+		for (var i = 0; i < items_ar.length; i++){
+			var nextItem = items_ar[i];
+			nextItem.myTarget = getObjectFromID(nextItem.myTargetID);
+			if(nextItem.myTarget == null){
+				//trace("resolved: "+nextItem.myDescription+" has no target");
+			}else{
+				//trace("resolved: "+nextItem.myDescription+" targets "+nextItem.myTarget.myDescription);
+			}
+		}
+		for (var d = 0; d < doors_ar.length; d++){
+			var nextDoor = doors_ar[d];
+			nextDoor.myTarget = getObjectFromID(nextDoor.myTargetID);
+			for(var ds = 0; ds < nextDoor.switch_ar.length; ds++){
+				//trace("nextDoor.switch_ar[ds]: "+nextDoor.switch_ar[ds]);
+
+				nextDoor.switch_ar[ds] = getObjectFromID(nextDoor.switch_ar[ds]);
+				//trace("nextDoor.switch_ar[ds]: "+nextDoor.switch_ar[ds]);
+			}
+		}
+		for (var h = 0; h < hotspots_ar.length; h++){
+			var nextHS = hotspots_ar[h];
+			//trace("hs: ["+nextHS.myDescription+"]");
+			nextHS.myTarget = getObjectFromID(nextHS.myTargetID);
+			if(nextHS.myTarget != null){
+				//trace("target = "+nextHS.myTarget.myDescription);
+			}
+		}
+		for(var sb = 0; sb < slotboxes_ar.length; sb++){
+			var box = slotboxes_ar[sb];
+			for(var k = 0; k < box.keys_ar.length; k++){
+				box.keys_ar[k] = getObjectFromID(box.keys_ar[k]);
+			}
+			box.myTarget = getObjectFromID(box.myTargetID);
+		}
+		for (var s = 0; s < segues_ar.length; s++){
+			var nextSegue = segues_ar[s];
+			nextSegue.myTarget = getObjectFromID(nextSegue.myTargetID);
+		}
+		for (var sw = 0; sw < switches_ar.length; sw++){
+			var nextSwitch = switches_ar[sw];
+			//trace("nextSwitch::myTarget: "+nextSwitch.myTargetID);
+			nextSwitch.myTarget = getObjectFromID(nextSwitch.myTargetID);
+			//trace("nextSwitch::myTarget: "+nextSwitch.myTarget);
+		}
+	}
+	function resolveContents(){
+		// replace all containers' contents_ar strings with objects
+		for(var c = 0; c < containers_ar.length; c++){
+			var container = containers_ar[c];
+			for(var ca = 0; ca < container.contents_ar.length; ca++){
+				container.contents_ar[ca] = getObjectFromID(container.contents_ar[ca]);
+				container.contents_ar[ca].invisible = true;
+				//container.contents_ar[ca].hide();
+			}
+			for(var cs = 0; cs < container.switch_ar.length; cs++){
+				container.switch_ar[cs] = getObjectFromID(container.switch_ar[cs]);
+			}
+		}
+	}
+	
+	function positionScene(){
+		//trace("positionScene()");
+		var inventoryWidth = 480;
+		getScreenDims();
+		wrap_div.style.left = String((windowW - activeScene.myElement.offsetWidth)/2)+"px";
+		wrap_div.style.top = String((windowH - activeScene.myElement.offsetHeight) *.35)+"px";
+		myInventory.setPosition(0,activeScene.myElement.offsetHeight);
+		
+		var scrollboxWidth = activeScene.myElement.offsetWidth - inventoryWidth - 4 - 20;
+		if(backbutton.myElement.style.display == "block"){
+			var bbx = String(activeScene.myElement.offsetWidth - backbutton.myElement.offsetWidth)+"px";
+			var bby = String(activeScene.myElement.offsetHeight)+"px";
+			backbutton.myElement.style.left = bbx;
+			backbutton.myElement.style.top = bby;
+			// scrollbox gives backbutton room
+			scrollboxWidth -= backbutton.myElement.offsetWidth;
+		}
+		scrollbox_div.style.top = inttopx(activeScene.myElement.offsetHeight);
+		scrollbox_div.style.width = inttopx(scrollboxWidth);
+		scrollbox_div.style.left = inttopx(inventoryWidth);
+	}
+	
+	function resize_handler(e){
+		positionScene();
+	}
+	
+	
+	function initPage(){
+	trace("initPage()");
+		//
+		// v TEMP TEST SETUP v
+		//
+		getScreenDims();
+		containers_div = document.getElementById("containers_div");
+		items_div = document.getElementById("items_div");
+		switches_div = document.getElementById("switches_div");
+		doors_div = document.getElementById("doors_div");
+		inventory_div = document.getElementById("inventory_div");
+		scrollbox_div = document.getElementById("scrollbox_div");
+		backgrounds_div = document.getElementById("backgrounds_div");
+		wrap_div = document.getElementById("wrap");
+		hotspots_div = document.getElementById("hotspots_div");
+		blackCover_div = document.getElementById("blackCover_div");
+		
+		
+		Sounds  = new AudioSystem(4);
+		bgMusic = Sounds.addSound("audio/music");
+		harp = Sounds.addSound("audio/harp_chime");
+		
+		// var backButton_img = document.createElement("img");
+		// 		backButton_img.src = "images/back_arrow.jpg";
+		// 		backButton_img.style.position = "absolute";
+		// 		setListener(backButton_img, "touched", backButtonTouched_handler);
+		// 		wrap_div.appendChild(backButton_img);
+		// 		backbutton = new Object();
+		// 		backbutton.myElement = backButton_img;
+		// 		function backButtonTouched_handler(e){
+		// 			loadScene(backbutton.myTarget);
+		// 		}
+		backbutton = new Backbutton(wrap_div);
+		setListener(backbutton, "touched", backButtonTouched_handler);
+		function backButtonTouched_handler(e){
+			//loadScene(backbutton.myTarget);
+			var backScene = back_ar[back_ar.length-1];
+			//trace("- back_ar.length: "+back_ar.length);
+			back_ar.splice(back_ar.length-1,1);
+			//trace("back new l: "+back_ar.length);
+			backingUp = true;
+			loadScene(backScene);
+		}
+		
+		window.onresize = resize_handler;
+		
+		
+		// ^ Move these to game engine, or create / destroy in Scene class?
+		
+		
+		/*
+		 =======================================
+		===========  HERE'S THE GAME  ============
+		 ========================================
+		 */
+		 
+		 
+	    // ---- HOTSPOT ----
+		var pointofentry_hs = new Hotspot(960, 640, "", "scene1", 0, 0);
+		
+		var splash_scene = new Scene("splash_scene.jpg", [],
+		[], [], [], [pointofentry_hs], "splash_scene", 
+		"");
+		 
+		 
+		
+		// -------- v SCENE 1 v -----
+		//
+		
+		// ---- ITEM ----
+		var gateKey = new Item(items_div, "gate1_key.png", "gate1_key.png", "gateKey", "s1_gateDoor", "Ornate Key", 160, 435);
+		
+		
+		// ---- CONTAINER ----
+		var box = new Container("box", "castle_gate1_boxcover.jpg", "blank_1x1", "Wooden Box", ['gateKey'], [141, 0],  [432,0],[]);
+		setListener(box,"touched",containerTouched_handler);
+		box.state = "unlocked";
+		
+		// ---- DOOR ----
+		var s1_gateDoor = new Door("castle_gate1_closed.jpg", "castle_gate1_open.jpg", "Sturdy Castle Gate", "s1_gateDoor", "scene2", [725,725], [201,201]);
+		
+		// ---- HOTSPOT ----
+		var mainGate_hs = new Hotspot(378, 318, "This massive gate is sealed with an unbreachable padlock.", "", 290, 173);
+		setListener(mainGate_hs, "touched", hotspotTouched_handler);
+		
+		var leftGate_hs = new Hotspot(223, 324, "This fence is too tall and pointed to climb.", "", 0, 165);
+		
+		var ground_hs = new Hotspot(960, 165, "The ground is dappled in moonlight.", "", 0, 485);
+		
+		var sky_hs = new Hotspot(960, 165, "In the distance through the trees, you see a tall castle tower.", "", 0, 0);
+		
+		var pillar1_hs = new Hotspot(70, 360, "This stone column is solidly in place.", "", 220, 128);
+		
+		var pillar2_hs = new Hotspot(70, 360, "This stone column is too smooth to climb.", "", 660, 128);
+		
+		var pillar3_hs = new Hotspot(70, 360, "This stone column is very much like the others.", "", 835, 128);
+		
+		var box_hs = new Hotspot(103, 150, "This is a sturdy wooden box.", "", 141, 432);
+		
+		// ---- SLOTBOX ----
+		//var testSlotbox = new Slotbox( "images/enemy_10.png", "images/enemy_10.png", 10, 200, "Key Holder", "scene1door1", ["candleGif","scene1ring1"], [30,33], [-10, 30] );
+						
+		// ---- SCENE ----
+		var s1i_ar = [gateKey];
+		var s1c_ar = [box];
+		var s1sw_ar = [];//tempLock
+		var s1d_ar = [s1_gateDoor];		
+		
+		var scene1 = new Scene("castle_gate1.jpg", s1i_ar,
+		s1c_ar, s1sw_ar, s1d_ar, [mainGate_hs, leftGate_hs, ground_hs, sky_hs,
+		pillar1_hs, pillar2_hs, pillar3_hs, box_hs], "scene1", 
+		"You come upon an expertly crafted gate, closed with heavy steel locks.");
+		
+		/*
+		*
+		* <=====-------v SCENE CLEARING v-------=====
+		*
+		*/
+		
+		// ---- HOTSPOT ----
+		var toCourtyard_hs = new Hotspot(350, 150, "This Gate leads up the hill.", "scene_courtyard", 170, 335);
+		
+		var plaque_hs = new Hotspot(160, 120, "This upturned rock appears to have some writing on it.", "scene_plaque", 250, 480);
+		
+		var rightFork_hs = new Hotspot(100, 150, "This text will never be seen?", "scene_brambles", 630, 330);
+		
+		// ---- DOOR ----
+		var manhole = new Door("blank_135x95", "castle_scene2_MH_open.jpg", "Ground Hatch", "manhole", "scene_underground", [480,480], [545,545]);
+		manhole.state = "unlocked";
+		//setListener(manhole,"touched",doorTouched_handler);
+		
+		var scene2 = new Scene("castle_scene2.jpg", [],
+		[], [], [manhole], [toCourtyard_hs, plaque_hs, rightFork_hs], "scene2", 
+		"On this side of the gate the path forks, winding up towards the castle, or down a hill to the right towards... <br>the unknown!");
+		
+		
+		/*
+		*
+		* <=====-------v SCENE PLAQUE v-------=====
+		*
+		*/
+		//var plaqueCloseup_hs = new Hotspot(84, 62, "This upturned rock appears to have some writing on it.", "scene_plaque", 294, 510);
+		
+		
+		
+		
+		var scene_plaque = new Scene("plaque_scene.jpg", [],
+		[], [], [], [], "scene_plaque", 
+		"This upturned rock appears to have some kind of hieroglyphs carved into it...",true);
+		
+		
+		
+		/*
+		*
+		* <=====-------v SCENE BRAMBLES v-------=====
+		*
+		*/
+		//var plaqueCloseup_hs = new Hotspot(84, 62, "This upturned rock appears to have some writing on it.", "scene_plaque", 294, 510);
+		
+		var brambles_door = new Door("blank_720x510", "blank_721x510", "The path is overgrown with brambles and impassable.", "brambles_door", "scene3", [125,125], [48,48], []);
+		//setListener(brambles_door,"touched", doorTouched_handler);
+		//brambles_door.state = "unlocked";
+
+		
+		var scene_brambles = new Scene("brambles_scene.jpg", [],
+		[], [], [brambles_door], [], "scene_brambles", 
+		"This fork of the path leads downhill into a gully.",true);
+		
+		
+		/*
+		*
+		* <=====-------v SCENE UNDERGROUND v-------=====
+		*
+		*/
+		// ---- CONTAINER ----
+		var darkness = new Container("darkness", "utterDarkness_scene.gif", "blank_1x1", "Darkness", ["doorToGenerator"], [0, 0],  [0,0],["tempswitch1","tempswitch2"]);
+		setListener(darkness,"touched",containerTouched_handler);
+		
+		//var brambles_door = new Door("blank_720x510", "blank_721x510", "The path is overgrown with brambles and impassable.", "brambles_door", "scene3", [125,125], [48,48], []);
+		
+		var doorToGenerator = new Door("blank_960x640", "blank_960x640", "Door to Outside", "doorToGenerator", "scene_generator", [0,0], [0,0],[]);
+		//setListener(doorToGenerator,"touched", doorTouched_handler);
+		doorToGenerator.state = "unlocked";
+		
+		
+		var scene_underground = new Scene("castle_scene2_MHin.jpg", [],
+		[darkness], [], [doorToGenerator], [], "scene_underground", 
+		"It is very dark down here.",true);
+		
+		/*
+		*
+		* <=====-------v SCENE COURTYARD v-------=====
+		*
+		*/
+		
+		
+		var gazebo_hs = new Hotspot(350, 200, "Gazebo.", "scene_gazebo", 0, 350);
+		
+		var scene_courtyard = new Scene("castle_scene7.jpg", [],
+		[], [], [], [gazebo_hs], "scene_courtyard", 
+		"Courtyard.",true);
+		
+		
+		
+		
+		/*
+		*
+		* <=====-------v SCENE GAZEBO v-------=====
+		*
+		*/
+		
+		// ---- HOTSPOT ----
+		var toGazeboCorner = new Hotspot(130, 225, "off-color stone", "scene_gazeboDrawer", 140, 311);
+		
+		var pillarCompartment = new Container("pillarCompartment", "blank_65x59", "castle_scene8_open.jpg","Compartment", ["dragonKey"], [555, 555],  [464,464],[]);
+		setListener(pillarCompartment,"touched",containerTouched_handler);
+		pillarCompartment.state = "unlocked";
+		
+		var dragonKey = new Item(items_div, "dragon_key.png", "dragon_key.png", "dragonKey", "dragon_door", "Dragon Shaped Key", 530, 500);
+		
+		var scene_gazebo = new Scene("castle_scene8.jpg", [dragonKey],
+		[pillarCompartment], [], [], [toGazeboCorner], "scene_gazebo", 
+		"Gazebo Corner.",true);
+		
+		
+		/*
+		*
+		* <=====-------v SCENE GAZEBO CORNER DRAWER v-------=====
+		*
+		*/
+		
+		
+		var toFusebox = new Hotspot(270, 315, "a light in the corner", "scene_gazeboFusebox", 664, 185);
+		
+		var stoneDrawer = new Container("stoneDrawer", "blank_200x50", "castle_scene9_open.jpg","Compartment", ["clippers"], [360, 360],  [450,416],[]);
+		setListener(stoneDrawer,"touched",containerTouched_handler);
+		stoneDrawer.state = "unlocked";
+		
+		var clippers = new Item(items_div, "clippers.png", "clippers.png", "clippers", "brambles_door", "Gardening Shears", 400, 464);
+		
+		var scene_gazeboDrawer = new Scene("castle_scene9.jpg", [clippers],
+		[stoneDrawer], [], [], [toFusebox], "scene_gazeboDrawer", 
+		"Gazebo.",true);
+		
+		
+		/*
+		*
+		* <=====-------v SCENE GAZEBO FUZEBOX v-------=====
+		*
+		*/
+		
+		var fusebox = new Container("fusebox", "blank_291x417", "castle_scene10empty.jpg","Fuse Box", ["fuse"], [371, 371],  [0,0],[]);
+		setListener(fusebox,"touched",containerTouched_handler);
+		fusebox.state = "unlocked";
+		
+		var backArrow = new Door("back_arrow.png", "back_arrow.png", "Jump to Castle", "backArrow", "scene_11", [900,900], [580,580]);
+		backArrow.state = "open";
+		
+		var fuse = new Item(items_div, "fuse.jpg", "fuseIcon.png", "fuse", "brambles_door", "Glowing Fuse", 450, 140);
+		
+		var scene_gazeboFusebox = new Scene("castle_scene10.jpg", [fuse],
+		[fusebox], [], [backArrow], [], "scene_gazeboFusebox", 
+		"Gazebo Fusebox.");
+		
+		/*
+		*
+		* <=====-------v SCENE 11 v-------=====
+		*
+		*/
+		
+		// ---- HOTSPOT ----
+		var to_dragonDoor_hs = new Hotspot(400, 425, "", "scene_dragondoor", 243, 40);
+
+		
+		var scene_11 = new Scene("castle_scene11.jpg", [],
+		[], [], [], [to_dragonDoor_hs], "scene_11", 
+		"The Castle.");
+		
+		
+		/*
+		*
+		* <=====-------v SCENE 11 v-------=====
+		*
+		*/
+		
+		var dragonDoor = new Door("blank_140x190", "castle_scene12_1_open.jpg", "Dragon Door", "dragonDoor", "", [410,410], [320,320]);
+
+		
+		var scene_dragondoor = new Scene("castle_scene12_1.jpg", [],
+		[], [], [dragonDoor], [], "scene_dragondoor", 
+		"The Castle.");
+		
+		
+		
+		/*
+		*
+		* <=====-------v SCENE 3 PATH TO GENERATOR v-------=====
+		*
+		*/
+		
+		// ---- HOTSPOT ----
+		var path_hs = new Hotspot(960, 640, "", "scene_generator", 0, 0);
+
+		
+		var scene3 = new Scene("castle_scene3.jpg", [],
+		[], [], [], [path_hs], "scene3", 
+		"This is a path to the generator down the path aways.  See? a generator.  keep walking...",true);
+		
+		
+		/*
+		*
+		* <=====-------v SCENE GENERATOR v-------=====
+		*
+		*/
+		
+		var generator_door = new Door("blank_275x155", "castle_scene4_gen_open.jpg", "Generator Compartment", "generator_door", "scene_generatorControls", [500,500], [220,220]);
+		//setListener(generator_door,"touched", doorTouched_handler);
+		generator_door.state = "unlocked";
+
+		
+		var scene_generator = new Scene("castle_scene4.jpg", [],
+		[], [], [generator_door], [], "scene_generator", 
+		"A brown horse with a white spot on its nose sticks his head over your shoulder from the meadow fence behind you and says,<br>\"It's the generator\"",true);
+		
+		
+		/*
+		*
+		* <=====-------v SCENE GENERATOR CONTROLS v-------=====
+		*
+		*/
+		
+		// ---- HOTSPOT ----
+		//var darkness_hs = new Hotspot(960, 640, "Darkness.  Utter and absolute darkness.  Your hand is still on the ladder, if your hurry you can still find your way out.", "", 0, 0);
+		var tempswitch1 = new Switch("tempswitch1", 3, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png"], [300,300,300], [350,350,350], "darkness", "Key Switch 1", "The Generator Starts Up!");
+		
+		var tempswitch2 = new Switch("tempswitch2", 3, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png"], [350,350,350], [350,350,350], "darkness", "Key Switch 2", "The Generator Starts Up!");
+		
+		var scene_generatorControls = new Scene("generatorControls_scene.jpg", [],
+		[], [], [], [tempswitch1,tempswitch2], "scene_generatorControls", 
+		"You need to turn the generator on (maybe you need some gas, or just throw a switch?).",true);
+		
+		
+		
+		
+		// ======================================================
+		
+		// ---- INVENTORY ----
+		myInventory = new Inventory(8,"images/inventory_slot.jpg",inventory_div,0,0);
+		
+		
+		
+		// Everything is added, 
+		// Set Dependencies (targets, keys, contents etc)
+		//trace("items_ar.length: "+items_ar.length);
+		//trace("scenes_ar.length: "+scenes_ar.length);
+		//trace("doors_ar.length: "+doors_ar.length);
+		resolveTargets();
+		resolveContents();
+		
+		//for(var i = 0; i < scenes_ar.length; i++){
+		//	scenes_ar[i].load();
+		//}
+		
+		// Load Scene and all its members
+		activeScene = splash_scene;
+		loadScene(splash_scene);
+		showMessage("<span style=\"color: #775601;\">   ~  ~  ~ </span><br>Welcome to Adventure");
+		
+	
+		Sounds.play(bgMusic, true);
+
+				
+		// var lq = new LoadQueue();
+		// 		lq.addtoQueue(["images/enemy_10.png","images/key_blue.png","images/key_green.png","images/ring.png","images/cookie.png","images/key_red.png","images/chest_closed.png",
+		// 		 "images/chest_open.png","images/door_closed.png", "images/door_open.png","images/inventory_slot.jpg",
+		// 		"images/knoleCastle_interior.jpg", "images/door_closed.png", "images/door_open.png", "images/halberd.png"]);
+		// 		setListener(lq,"queueLoaded",queueLoaded_handler);
+		// 		lq.startLoad();
+		
+	
+		
+
+		//		
+		// ^ TEMP TEST SETUP ^
+		//
+		
+		
+	}
+	// -->
+	</script>
+
+</head>
+<body bgcolor='#202023' onload="initPage()">
+
+<div id="messagebox"><p id="messagep">MESSAGE</p></div>
+<div id="output" style="border:0px solid grey; margin:10px; padding:10px; color: grey; font-size: 14px; font-family:Arial,Verdana,Helvitica,sans-serif; text-align:left; line-height:150%; position:relative; top:0px;"></div>
+
+<span id="wrap" class="unselectable">
+
+	<div id="items_div" style="border:none; position:absolute; z-index:50; top:0px; left:0px;"></div>
+	<div id="containers_div" style="border:none; position:absolute; z-index:40; top:0px; left:0px;"></div>
+	<div id="inventory_div" style="border:none; position:absolute; z-index:30; top:0px; left:0px;"></div>
+	<div id="scrollbox_div" style="z-index:35;"></div>
+	<div id="switches_div" style="border:none; position:absolute; z-index:20; top:0px; left:0px;"></div>
+	<div id="doors_div" style="border:none; position:absolute; z-index:10; top:0px; left:0px;"></div>
+	<div id="backgrounds_div" style="border:none; position:absolute; z-index:5; top:0px; left:0px;"></div>
+	<div id="hotspots_div" style="border:none; position:absolute; z-index:5; top:0px; left:0px;"></div>
+	
+</span>
+
+<div id="blackCover_div" style="z-index:1100; margin:0px; position:fixed; top:0px;left:0px; background-color:black; height:100%; width:100%;"></div>
+
+</body>
+</html>

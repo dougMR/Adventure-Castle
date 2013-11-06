@@ -1,0 +1,286 @@
+/* 
+ * styles.css
+ *
+ * @author: Chopping Block (choppinblock.com)
+ *
+ */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+html {
+	height:100%;
+}
+body {
+	height: 100%; /* IE6: treated as min-height*/	
+	background: #000000; /* Old browsers */
+	background: -moz-linear-gradient(90deg,  #0c0000 20%, #000000 61%, #00000f 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, top, bottom, color-stop(20%,#0c0000), color-stop(61%,#000000), color-stop(99%,#00000f)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(90deg,  #0c0000 20%,#000000 61%, #00000f 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(90deg,  #0c0000 20%,#000000 61%,#00000f 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(90deg,  #0c0000 20%,#000000 61%, #00000f 99%); /* IE10+ */
+	background: linear-gradient(90deg,  #0c0000 20%,#000000 61%, #00000f 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000036',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Your styles go here */
+
+/*body {
+	background-color: #000000;
+	background-image: url('spaceTile.gif');
+	background-repeat:repeat;
+}*/
+div {
+	position:absolute;
+	color: #666699;
+	margin: 0;
+	padding: 0;
+	font-size:22px;
+	text-align:center;
+	 /* Transfoorm */
+ -moz-transform: scale(1) rotate(0deg) translate(0px, 0px) skew(0deg, 0deg);
+ -webkit-transform: scale(1) rotate(0deg) translate(0px, 0px) skew(0deg, 0deg);
+ -o-transform: scale(1) rotate(0deg) translate(0px, 0px) skew(0deg, 0deg);
+ -ms-transform: scale(1) rotate(0deg) translate(0px, 0px) skew(0deg, 0deg);
+ transform: rotate(0deg);
+	 /* Center Origin */
+}
+/*div .centerHolder {
+	padding: auto;
+}*/
+
+#wrap {
+	position:absolute;
+	top:0;
+	/*border:5px solid #660000; 
+	background-color:rgba(0,0,0,0.75);*/
+	padding:10px;
+	z-index: 500;
+	display:inline-block;
+}
+
+#messagebox {
+position:absolute;
+visibility:hidden;
+border:5px solid #835d0c; /*#3f0000;*/
+/*color:#CC1111;*/
+/*background-color:rgba(0,0,0,0.75);*/
+background-image:  url("images/transparent35.png");
+/*opacity:0.7;
+filter:alpha(opacity=70);*/ /* For IE8 and earlier */
+display:block;
+max-width:600px;
+height:auto;
+/*padding:30px 40px;*/
+/*font-size:20px;font-weight:bold;
+font-family:Arial,Verdana,Helvitica,sans-serif;*/
+ /* round corners */
+ -moz-border-radius: 20px;
+ -webkit-border-radius: 20px;
+ border-radius:20px;
+z-index: 1000;
+pointer-events:none;
+activeItem.myElement.style.pointerEvents = "none";
+}
+
+#messagebox p
+  {
+  margin:30px 40px;
+/*text-align:LEFT;*/
+line-height:150%;
+font-size:30px;
+/*font-weight:bold;*/
+font-family:BlackChanceryRegular,Veranda,sans-serif;
+  color:#f7ebb3;
+letter-spacing:2px;
+text-shadow: 0px 0px 0px #f7ebb3, 2px 5px 4px #000, 3px 3px 3px #000;
+pointer-events:none;
+  }
+  
+  
+#scrollbox_div {
+position: absolute;
+bottom: 60px;
+padding: 1px 10px;
+right: 0px;
+width: 190px;
+height: 54px;
+//overflow:-moz-scrollbars-vertical;
+overflow-y:scroll;
+/*overflow:scroll;*/
+/*background-color: #241a03;*/
+background: #241a03; /* Old browsers */
+	background: -moz-linear-gradient(-80deg,  #4f3801 8%, #241b0a 61%, #241a03 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, top, bottom, color-stop(8%,#4f3801), color-stop(61%,#241b0a), color-stop(99%,#241a03)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(-80deg,  #4f3801 8%,#241b0a 61%, #241a03 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(-80deg,  #4f3801 8%,#241b0a 61%,#241a03 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(-80deg,  #4f3801 8%,#241b0a 61%, #241a03 99%); /* IE10+ */
+	background: linear-gradient(-80deg,  #4f3801 8%,#241b0a 61%, #241a03 99%); 
+
+
+color: #b0d1ea; /*#eadbb5;*/
+border: 2px solid #9e7710;
+font-size:16px;
+font-weight:bold;
+font-family:Georgia,Times New Roman;
+text-align:LEFT
+}
+  
+  
+/* Generated by Font Squirrel (http://www.fontsquirrel.com) on March 4, 2012 */
+@font-face {
+    font-family: 'BlackChanceryRegular';
+    src: url('fonts/blkchcry-webfont.eot');
+    src: url('fonts/blkchcry-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/blkchcry-webfont.woff') format('woff'),
+         url('fonts/blkchcry-webfont.ttf') format('truetype'),
+         url('fonts/blkchcry-webfont.svg#BlackChanceryRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.unselectable {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+
+
+.settings-on {
+color:#33cc33; 
+cursor: pointer; 
+cursor: hand;  
+position:relative;
+border:2px solid #444444; display:inline-block;padding:10px;
+padding: 1px 5px;
+margin: 1px;
+ /* round corners */
+ -moz-border-radius: 5px;
+ -webkit-border-radius: 5px;
+ border-radius:5px;
+}
+.settings-off {
+color:#A47B39; 
+cursor: pointer; 
+cursor: hand;  
+position:relative;
+border:1px solid #444444; display:inline-block;padding:10px;
+padding:2px 5px;
+margin: 1px;
+ /* round corners */
+ -moz-border-radius: 5px;
+ -webkit-border-radius: 5px;
+ border-radius:5px;
+}
+.roundbox {
+border:1px solid #333333; display:inline-block;padding:10px;
+ /* round corners */
+ -moz-border-radius: 10px;
+ -webkit-border-radius: 10px;
+ border-radius:10px;
+}
+
+
+
+img.shipInDock {
+	width:61.5;
+	height:50px;
+	/* Transfoorm */
+ -moz-transform: scale(1) rotate(270deg) translate(0px, 0px) skew(0deg, 0deg);
+ -webkit-transform: scale(1) rotate(270deg) translate(0px, 0px) skew(0deg, 0deg);
+ -o-transform: scale(1) rotate(270deg) translate(0px, 0px) skew(0deg, 0deg);
+ -ms-transform: scale(1) rotate(270deg) translate(0px, 0px) skew(0deg, 0deg);
+ transform: rotate(270deg);
+ /*border: 1px solid yellow;*/
+ margin:0;
+ padding:0px;
+}
+/* ---------------------- GUI Nav ---------------------- */
+ .control_btn{
+position:absolute;
+width:72px;
+height:72px;
+margin:0px;
+padding:0px;
+background-color:#999999;
+color:white;
+font-size:20px;font-weight:bold;
+font-family:Arial,Verdana,Helvitica,sans-serif;
+text-transform:uppercase;
+ /* round corners */
+ -moz-border-radius: 15px;
+ -webkit-border-radius: 15px;
+ border-radius:15px;
+}
+ .controlSmall_btn{
+position:absolute;
+width:50px;
+height:50px;
+margin:0px;
+padding:0px;
+background-color:#999999;
+color:white;
+font-size:20px;font-weight:bold;
+font-family:Arial,Verdana,Helvitica,sans-serif;text-transform:uppercase;
+ /* round corners */
+ -moz-border-radius: 15px;
+ -webkit-border-radius: 15px;
+ border-radius:15px;
+}
+
+/* ---------------------- END Blueslate nav ---------------------- */
+#base {
+	width:200px;
+	height:30px;
+}
+img.hidden {
+ display: none;
+ border: 1px solid green;
+}
