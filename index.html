@@ -28,13 +28,11 @@
 
 	<script src="js/Scene.js"></script>	
 	<script src="js/Door.js"></script>	
-	<script src="js/Lock.js"></script>
 	<script src="js/Item.js"></script>
 
 	<script src="js/Container.js"></script>
 	<script src="js/Hotspot.js"></script>
 
-	<script src="js/Slotbox.js"></script>
 	<script src="js/Switch.js"></script>
 	
 	<script src="js/Inventory.js"></script>
@@ -45,7 +43,6 @@
 	
 	
 	<script type="text/javascript">
-	<!--
 
 	//
 	//
@@ -62,11 +59,10 @@
 	var hotspots_div;
 	var items_ar = [];
 	var containers_ar = [];
-	var slotboxes_ar = [];
 	var switches_ar = [];
 	var doors_ar = [];
 	var scenes_ar = [];
-	var segues_ar = [];
+	// var segues_ar = [];
 	var hotspots_ar = [];
 	var backbutton;
 	
@@ -121,17 +117,6 @@
 				}
 			}
 		}
-		// Look in Slotboxes
-		if(!foundTarget){
-			for(var sb = 0; sb < slotboxes_ar.length; sb++){
-				var box = slotboxes_ar[sb];
-				if(box.myID == targetID){
-					targetObj = box;
-					foundTarget = true;
-					break;
-				}
-			}
-		}
 		// Look in Scenes
 		if(!foundTarget){
 			for(var sc = 0; sc < scenes_ar.length; sc++){
@@ -145,17 +130,17 @@
 			}
 		}
 		// Look in Segues
-		if(!foundTarget){
-			for(var seg = 0; seg < segues_ar.length; seg++){
-				var segue = segues_ar[seg];
-				//trace("checking "+scene.myID);
-				if(segue.myID == targetID){
-					targetObj = segue;
-					foundTarget = true;
-					break;
-				}
-			}
-		}
+		// if(!foundTarget){
+		// 	for(var seg = 0; seg < segues_ar.length; seg++){
+		// 		var segue = segues_ar[seg];
+		// 		//trace("checking "+scene.myID);
+		// 		if(segue.myID == targetID){
+		// 			targetObj = segue;
+		// 			foundTarget = true;
+		// 			break;
+		// 		}
+		// 	}
+		// }
 		// Look in Switches
 		if(!foundTarget){
 			for(var sw = 0; sw < switches_ar.length; sw++){
@@ -200,17 +185,17 @@
 				//trace("target = "+nextHS.myTarget.myDescription);
 			}
 		}
-		for(var sb = 0; sb < slotboxes_ar.length; sb++){
-			var box = slotboxes_ar[sb];
-			for(var k = 0; k < box.keys_ar.length; k++){
-				box.keys_ar[k] = getObjectFromID(box.keys_ar[k]);
-			}
-			box.myTarget = getObjectFromID(box.myTargetID);
-		}
-		for (var s = 0; s < segues_ar.length; s++){
-			var nextSegue = segues_ar[s];
-			nextSegue.myTarget = getObjectFromID(nextSegue.myTargetID);
-		}
+		// for(var sb = 0; sb < slotboxes_ar.length; sb++){
+		// 	var box = slotboxes_ar[sb];
+		// 	for(var k = 0; k < box.keys_ar.length; k++){
+		// 		box.keys_ar[k] = getObjectFromID(box.keys_ar[k]);
+		// 	}
+		// 	box.myTarget = getObjectFromID(box.myTargetID);
+		// }
+		// for (var s = 0; s < segues_ar.length; s++){
+		// 	var nextSegue = segues_ar[s];
+		// 	nextSegue.myTarget = getObjectFromID(nextSegue.myTargetID);
+		// }
 		for (var sw = 0; sw < switches_ar.length; sw++){
 			var nextSwitch = switches_ar[sw];
 			//trace("nextSwitch::myTarget: "+nextSwitch.myTargetID);
@@ -532,11 +517,12 @@
 		
 		// ---- HOTSPOT ----
 		var to_dragonDoor_hs = new Hotspot(400, 425, "", "scene_dragondoor", 243, 40);
+		var to_scene2_hs = new Hotspot(310, 275, "", "scene2", 675, 381);
 
 		
 		var scene_11 = new Scene("castle_scene11.jpg", [],
-		[], [], [], [to_dragonDoor_hs], "scene_11", 
-		"The Castle.");
+		[], [], [], [to_dragonDoor_hs, to_scene2_hs], "scene_11", 
+		"The Castle (Scene 11).");
 		
 		
 		/*
@@ -545,12 +531,12 @@
 		*
 		*/
 		
-		var dragonDoor = new Door("blank_140x190", "castle_scene12_1_open.jpg", "Dragon Door", "dragonDoor", "", [410,410], [320,320]);
+		var dragonDoor = new Door("blank_140x190", "castle_scene12_1_open.jpg", "Dragon Door", "dragon_door", "scene_11", [410,410], [320,320]);
 
 		
 		var scene_dragondoor = new Scene("castle_scene12_1.jpg", [],
 		[], [], [dragonDoor], [], "scene_dragondoor", 
-		"The Castle.");
+		"Dragon Door Scene.");
 		
 		
 		
@@ -593,9 +579,9 @@
 		
 		// ---- HOTSPOT ----
 		//var darkness_hs = new Hotspot(960, 640, "Darkness.  Utter and absolute darkness.  Your hand is still on the ladder, if your hurry you can still find your way out.", "", 0, 0);
-		var tempswitch1 = new Switch("tempswitch1", 3, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png"], [300,300,300], [350,350,350], "darkness", "Key Switch 1", "The Generator Starts Up!");
+		var tempswitch1 = new Switch("tempswitch1", 0, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png", "key_yellow.png"], [300,300,300,300,300], [350,350,350,350,350], "darkness", "Key Switch 1", "The Generator Starts Up!");
 		
-		var tempswitch2 = new Switch("tempswitch2", 3, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png"], [350,350,350], [350,350,350], "darkness", "Key Switch 2", "The Generator Starts Up!");
+		var tempswitch2 = new Switch("tempswitch2", 3, ["key_blue.png", "key_purple.png", "key_cyan.png", "key_red.png", "key_yellow.png"], [350,350,350,350,350], [350,350,350,350,350], "darkness", "Key Switch 2", "The Generator Starts Up!");
 		
 		var scene_generatorControls = new Scene("generatorControls_scene.jpg", [],
 		[], [], [], [tempswitch1,tempswitch2], "scene_generatorControls", 

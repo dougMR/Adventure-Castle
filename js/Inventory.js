@@ -120,16 +120,17 @@ function customEvent(eventName){
 	return evtObj;
 }
 
-Function.prototype.bind = function(obj) { 
-  var method = this, 
-   temp = function() { 
-    return method.apply(obj, arguments); 
-   }; 
-  return temp; 
-}
+// Function.prototype.bind = function(obj) { 
+//   var method = this, 
+//    temp = function() { 
+//     return method.apply(obj, arguments); 
+//    }; 
+//   return temp; 
+// }
 
 function addItem(item){
 	//trace("Inventory.addItem")
+	console.log("Inventory.addItem");
 	//var foundRoom = false;
 	var slotNum = -1;
 	for(var i = 3; i > -1; i--){
@@ -148,10 +149,10 @@ function addItem(item){
 		this.contents_ar[slotNum] = item;
 		var slotElem = this.slots_ar[slotNum];
 		item.myElement.src = "";
-		item.myElement.src = item.iconSrc;
-		item.setPosition(slotElem.offsetLeft+slotElem.offsetWidth/2-item.myElement.offsetWidth/2, slotElem.offsetTop+slotElem.offsetHeight/2-item.myElement.offsetHeight/2);
-		this.sparkle.style.left = inttopx(slotElem.offsetLeft);
-		this.sparkle.style.top = inttopx(slotElem.offsetTop);
+		item.myElement.src = item.iconSrc; //item.images_ar[ 1 ]; // 
+		item.setPosition( slotElem.offsetLeft+slotElem.offsetWidth / 2 - item.myElement.offsetWidth / 2, slotElem.offsetTop+slotElem.offsetHeight / 2 - item.myElement.offsetHeight / 2 );
+		this.sparkle.style.left = inttopx( slotElem.offsetLeft );
+		this.sparkle.style.top = inttopx( slotElem.offsetTop );
 		//trace("inttopx(sletElem.ofsetTop): "+inttopx(slotElem.offsetTop));
 		//trace("this.sparkle.styel.position: "+this.sparkle.style.position);
 		//this.sparkle.src = "";
@@ -175,7 +176,7 @@ function addItem(item){
 	// 			this.contents_ar[i] = item;
 	// 			var slotElem = this.slots_ar[i];
 	// 			// Show it in slot
-	// 			item.myElement.src = item.iconSrc;
+	// 			item.myElement.src = item.images_ar[ item.iconSrcIndex ];
 	// 			item.setPosition(slotElem.offsetLeft+slotElem.offsetWidth/2-item.myElement.offsetWidth/2, slotElem.offsetTop+slotElem.offsetHeight/2-item.myElement.offsetHeight/2);
 	// 			break;
 	// 		}

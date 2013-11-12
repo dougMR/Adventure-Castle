@@ -62,25 +62,19 @@ Scene.prototype.y = 0;
 *     BIND METHODS
 *   --------------
 */
+Scene.prototype.initMyImgElement = initMyImgElement;
 Scene.prototype.onTouch = onTouch;
 // Scene.prototype.customEvent = customEvent;
 Scene.prototype.setPosition = setPosition;
 
 Scene.prototype.loadBGimage = loadBGimage;
 Scene.prototype.imageLoaded_handler = imageLoaded_handler;
-Scene.prototype.initMyImgElement = initMyImgElement;
 //Scene.prototype.loadScene = loadScene;
 Scene.prototype.show = show;
 Scene.prototype.hide = hide;
 Scene.prototype.init = init;
 Scene.prototype.load = load;
 Scene.prototype.checkLoad = checkLoad;
-
-// Scene.prototype.addItem = addItem;
-// Scene.prototype.addContainer = addContainer;
-// Scene.prototype.addSwitch = addSwitch;
-// Scene.prototype.addDoor = addDoor;
-// Scene.prototype.addHotspot = addHotspot;
 
 Scene.prototype.addObjects =addObjects;
 
@@ -102,31 +96,28 @@ function init(){
 	this.myElement.myObject = this;
 	this.myContainer.appendChild(this.myElement);
 	
-	// this.items_ar = [];
-	// this.containers_ar = [];
-	// this.switches_ar = [];
-	// this.doors_ar = [];
 	this.allMyContents_ar = this.items_ar.concat(this.containers_ar,this.switches_ar,this.doors_ar,this.hotspots_ar);
-	//trace("this.items_ar.length: "+this.items_ar.length);
-	//for(var i = 0; i< this.allMyContents_ar.length; i++){
-		//this.allMyContents_ar[i].setScene(this);
-	//}
 
 }
 
 
 function loadBGimage(){
 	//trace("Scene::loadBGimage: "+this.myDescription);
-
 	
 	this.myElement.onload = this.imageLoaded_handler.bind(this);
 	this.myElement.onerror = this.imageError_handler;
 	// preload the image file
-	//img.src = this.bgImg;
 	this.myElement.src = this.bgImg;
 }
+
 function imageLoaded_handler(e){
 	//trace("Scene:: BGimageLoaded ["+this.myElement.src+"]");
+	console.log('SCENE this is: '+this);
+	console.log(this);
+	// console.log('this.initMyImgElement is: '+this.initMyImgElement);
+
+	
+	
 	this.initMyImgElement();
 	this.setPosition(this.x,this.y);
 	this.bgLoaded = true;
@@ -170,26 +161,6 @@ function setPosition(x,y){
 	
 }
 
-// function customEvent(eventName){
-// 	
-// 	var evtObj = document.createEvent("Event");
-// 	evtObj.initEvent(eventName,true,true);
-// 	//alert (evtObj+"\n type: "+evtObj.type);
-// 	return evtObj;
-// 	
-// }
-
-
-// Function.prototype.bind = function(obj) { 
-// 	
-//   var method = this, 
-//    temp = function() { 
-//     return method.apply(obj, arguments); 
-//    }; 
-//   return temp; 
-// 
-// }
-
 function die(){
 	// ?? Remove Event Listeners ??
 	this.myElement.parentNode.removeChild(this.myElement);
@@ -202,9 +173,11 @@ function load(){
 	if(!this.loaded){
 		this.loadBGimage();
 		for(var i = 0; i< this.allMyContents_ar.length; i++){
-			trace("Scene loading ["+this.allMyContents_ar[i].myDescription+"]");
 			if(!this.allMyContents_ar[i].loaded){
+				trace("Scene loading ["+this.allMyContents_ar[i].myDescription+"]");
 				this.allMyContents_ar[i].load();
+			} else {
+				trace("Already loaded ["+this.allMyContents_ar[i].myDescription+"]")
 			}
 			this.allMyContents_ar[i].myElement.ondragstart = function() { return false; };
 			this.allMyContents_ar[i].myScene = this;
@@ -217,16 +190,17 @@ function load(){
 	}
 }
 function checkLoad(){
-	trace("checkLoad this: "+this.myDescription);
+	trace("Scene checkLoad : "+this.myDescription);
 	var numLoaded = 0;
 	for(var i = 0; i< this.allMyContents_ar.length; i++){
-	trace(i+":: "+this.allMyContents_ar[i].loaded);
+	// trace(i+":: ["+this.allMyContents_ar[i].myDescription+"]"+this.allMyContents_ar[i].loaded);
 		if(this.allMyContents_ar[i].loaded){
 			numLoaded++;
 		};
 	}
-	//trace("loaded: "+numLoaded +" / "+this.allMyContents_ar.length);
+	//
 	if(this.bgLoaded && numLoaded == this.allMyContents_ar.length){
+		trace("loaded: "+numLoaded +" / "+this.allMyContents_ar.length);
 		clearInterval(loadCheckInterval);
 		this.loaded = true;
 		trace("Scene ["+this.myDescription+"] Loaded, myElement: "+this.myElement.src);
@@ -244,14 +218,8 @@ function show(){
 		//trace("contents: "+this.allMyContents_ar[i].myDescription);
 		this.allMyContents_ar[i].show();
 	}
-	// for (i = 0; i< this.containers_ar.length; i++){
-// 		var cont = this.containers_ar[i];
-// 		if(cont.state != "open"){
-// 			for (var c = 0; c < cont.contents_ar.length; c++){
-// 				cont.contents_ar[c].myElement.style.display = "none";
-// 			}
-// 		}
-// 	}
+	console.log('Scene.show: '+this.myDescription);
+	
 }
 function hide(){
 	//trace("hide "+this.myDescription);
@@ -292,28 +260,3 @@ function addObjects(objs_ar){
 	}
 }
 
-// function addDoor(door){
-// 	if(this.allMyContents_ar.indexOf(door) == -1){
-// 		this.allMyContents_ar.push(door);
-// 		trace("typeof(door): "+typeof(door));
-// 		//trace("door is Door: " +(door is Door));
-// 		trace("door.prototype: "+door.prototype);
-// 		trace("door.constructor.toString(): "+door.constructor.toString());
-// 		if(door.constructor.toString().indexOf("Door") != -1){
-// 			door.show();
-// 			this.doors_ar.push(door);
-// 		}
-// 	}
-// }
-// function addItem(){
-// 	
-// }
-// function addContainer(){
-// 	
-// }
-// function addSwitch(){
-// 	
-// }
-// function addHotspot(){
-// 	
-// }

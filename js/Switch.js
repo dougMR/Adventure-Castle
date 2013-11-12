@@ -91,6 +91,9 @@ function switchMe(){
 function initElement(){
 	//trace("Switch::initElement()");
 	this.myElement = document.createElement('img');
+	// v TEMP
+	this.myElement.style.border = "3px dashed orange";
+	// ^ TEMP
 	this.myElement.style.position = "absolute";
 	this.myElement.style.display = "none";
 	this.myElement.myObject = this;
@@ -163,13 +166,13 @@ function customEvent(eventName){
 	return evtObj;
 }
 
-Function.prototype.bind = function(obj) { 
-  var method = this, 
-   temp = function() { 
-    return method.apply(obj, arguments); 
-   }; 
-  return temp; 
-}
+// Function.prototype.bind = function(obj) { 
+//   var method = this, 
+//    temp = function() { 
+//     return method.apply(obj, arguments); 
+//    }; 
+//   return temp; 
+// }
 
 function touched_handler(e){
 	//trace("Switch::touched - "+this.myDescription);

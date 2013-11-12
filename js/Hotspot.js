@@ -5,6 +5,9 @@
 function Hotspot(width, height, myDescription, myDestinationScene, x, y, initState){
 	this.myContainer = hotspots_div;
 	this.myElement = document.createElement('div');
+	// v TEMP
+	this.myElement.style.backgroundColor = "rgba(255,255,0,0.3)";
+	// ^ for temp display
 	this.myElement.style.position = "absolute";
 	this.myElement.style.display = "none";
 	//this.myElement.style.backgroundColor = "red";
@@ -91,13 +94,13 @@ function customEvent(eventName){
 	return evtObj;
 }
 
-Function.prototype.bind = function(obj) { 
-  var method = this, 
-   temp = function() { 
-    return method.apply(obj, arguments); 
-   }; 
-  return temp; 
-}
+// Function.prototype.bind = function(obj) { 
+//   var method = this, 
+//    temp = function() { 
+//     return method.apply(obj, arguments); 
+//    }; 
+//   return temp; 
+// }
 
 // function unlock() {
 // 	this.myElement.dispatchEvent(this.UNLOCKED);

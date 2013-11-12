@@ -90,6 +90,9 @@ Container.prototype.show = show;
 */
 function initElement(){
 	this.myElement = document.createElement('img');
+	// v TEMP
+	this.myElement.style.border = "3px dashed lightblue";
+	// ^ TEMP
 	this.myElement.style.position = "absolute";
 	this.myElement.style.display = "none";
 	this.myElement.myObject = this;
@@ -113,7 +116,6 @@ function imageLoaded_handler(e){
 		this.setPosition(this.x_ar[0],this.y_ar[0]);
 		this.myElement.src = this.images_ar[0];
  		this.setSize(this.width_ar[0],this.height_ar[0]);
-		this.myElement.style.display = "none";
 		this.myElement.style.visibility = "visible";
 		this.hide();
 		trace("Container::loaded()<br> - width_ar: "+this.width_ar);
@@ -125,7 +127,7 @@ function imageLoaded_handler(e){
 function load(){
 	//trace("Container ["+this.myDescription+"]::load()");
 	this.myElement.style.display = "block";
-		this.myElement.style.visibility = "hidden";
+	this.myElement.style.visibility = "hidden";
 	this.myElement.onload = this.imageLoaded_handler.bind(this);
 	this.myElement.src = this.images_ar[0];
 
@@ -145,19 +147,20 @@ function setSize(w,h){
 	this.myElement.style.height = String(h)+"px";
 }
 
-function customEvent(eventName){
-	var evtObj = document.createEvent("Event");
-	evtObj.initEvent(eventName,true,true);
-	return evtObj;
-}
+// function customEvent(eventName){
+// 	var evtObj = document.createEvent("Event");
+// 	evtObj.initEvent(eventName,true,true);
+// 	return evtObj;
+// }
 
-Function.prototype.bind = function(obj) { 
-  var method = this, 
-   temp = function() { 
-    return method.apply(obj, arguments); 
-   }; 
-  return temp; 
-}
+// Function.prototype.bind = function(obj) { 
+//   var method = this, 
+//    temp = function() { 
+//     return method.apply(obj, arguments); 
+//    }; 
+//   return temp; 
+// }
+
 function open() {
 	this.state = "open";
 	this.myElement.src = this.images_ar[1];
